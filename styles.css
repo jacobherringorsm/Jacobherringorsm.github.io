@@ -26,6 +26,21 @@
   --accent-rgb: 255, 197, 103;
 }
 
+:root[data-accent="lime"] {
+  --accent: #9bff75;
+  --accent-rgb: 155, 255, 117;
+}
+
+:root[data-accent="rose"] {
+  --accent: #ff6b9b;
+  --accent-rgb: 255, 107, 155;
+}
+
+:root[data-accent="ice"] {
+  --accent: #75a7ff;
+  --accent-rgb: 117, 167, 255;
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -218,6 +233,10 @@ h1, h2, p { margin: 0; }
 .gui-trigger { position: absolute; top: 15px; right: 16px; z-index: 6; display: flex; min-height: 34px; align-items: center; gap: 10px; padding: 0 10px; border: 1px solid rgba(var(--accent-rgb), .35); border-radius: 7px; background: rgba(7, 12, 20, .87); color: var(--text); font-size: 9px; font-weight: 750; letter-spacing: .1em; cursor: pointer; backdrop-filter: blur(8px); }
 .gui-trigger:hover { border-color: var(--accent); color: var(--accent); }
 .gui-trigger kbd { padding: 4px 5px; border: 1px solid var(--line-bright); border-radius: 4px; color: var(--muted); font: inherit; font-size: 7px; letter-spacing: .06em; }
+.game-shell.gui-open, .game-shell.gui-open * { cursor: default !important; }
+.game-shell.gui-open button, .game-shell.gui-open input, .game-shell.gui-open select, .game-shell.gui-open a, .game-shell.gui-open [role="button"] { cursor: pointer !important; }
+.game-shell.gui-open input[type="range"] { cursor: ew-resize !important; }
+.game-shell.gui-open input[type="text"] { cursor: text !important; }
 .clickgui-overlay { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; padding: 24px; background: rgba(4, 7, 13, .62); backdrop-filter: blur(5px); }
 .clickgui-overlay[hidden] { display: none; }
 .clickgui-window { display: grid; width: min(880px, calc(100vw - 32px)); min-height: 500px; max-height: min(620px, calc(100vh - 32px)); grid-template-columns: 190px minmax(0, 1fr); overflow: hidden; border: 1px solid rgba(var(--accent-rgb), .25); border-radius: 13px; background: #0c121e; box-shadow: 0 25px 100px rgba(0, 0, 0, .62), 0 0 35px rgba(var(--accent-rgb), .07); }
@@ -256,11 +275,17 @@ h1, h2, p { margin: 0; }
 .keybind-button { min-width: 85px; min-height: 27px; padding: 0 8px; border: 1px solid rgba(var(--accent-rgb), .27); border-radius: 5px; background: var(--accent-soft); color: var(--accent); font-size: 8px; font-weight: 700; letter-spacing: .07em; cursor: pointer; }
 .keybind-button:hover { border-color: var(--accent); }
 .gui-accent-options { display: grid; gap: 9px; margin-top: 18px; }
+.gui-screen[data-screen-panel="appearance"] { overflow-y: auto; }
 .gui-accent { display: flex; min-height: 43px; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--line); border-radius: 7px; background: rgba(255,255,255,.015); color: var(--muted); font-size: 9px; text-align: left; cursor: pointer; }
 .gui-accent:hover, .gui-accent.is-selected { border-color: rgba(var(--accent-rgb), .38); background: var(--accent-soft); color: var(--text); }
-.gui-accent .swatch { width: 10px; height: 10px; }
+.gui-accent .swatch { width: 10px; height: 10px; border-radius: 50%; background: var(--swatch-color); box-shadow: 0 0 10px color-mix(in srgb, var(--swatch-color) 45%, transparent); }
 .gui-accent .choice-check { display: none; margin-left: auto; color: var(--accent); font-size: 11px; }
 .gui-accent.is-selected .choice-check { display: inline; }
+.custom-theme-editor { display: grid; grid-template-columns: minmax(0, 1fr) 78px auto; align-items: end; gap: 9px; margin-top: 14px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,.012); }
+.custom-theme-editor label { display: grid; gap: 5px; color: var(--muted); font-size: 8px; }
+.custom-theme-editor input[type="text"] { width: 100%; height: 29px; padding: 0 8px; border: 1px solid var(--line-bright); border-radius: 5px; background: #101725; color: var(--text); font: inherit; font-size: 9px; }
+.custom-theme-editor input[type="color"] { width: 100%; height: 29px; padding: 2px; border: 1px solid var(--line-bright); border-radius: 5px; background: #101725; }
+.custom-theme-editor .keybind-button { min-width: 90px; height: 29px; }
 .gui-footer { display: flex; align-items: center; gap: 5px; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); color: var(--dim); font-size: 8px; }
 .gui-footer > span:first-child { color: var(--accent); }
 .footer-divider { padding: 0 3px; }
@@ -366,6 +391,8 @@ h1, h2, p { margin: 0; }
   .gui-module { min-height: 65px; padding: 8px; }
   .keybind-row { margin-top: 9px; padding: 0 8px; }
   .gui-footer { flex-wrap: wrap; font-size: 7px; }
+  .custom-theme-editor { grid-template-columns: minmax(0, 1fr) 70px; }
+  .custom-theme-editor .keybind-button { grid-column: 1 / -1; width: 100%; }
   .crosshair-controls { gap: 5px; }
   .cps-widget { top: 58px; right: 9px; }
   .keystrokes-widget { bottom: 9px; left: 9px; }

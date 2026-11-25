@@ -113,13 +113,22 @@
 
             <section class="gui-screen" data-screen-panel="appearance" aria-labelledby="appearance-title" hidden>
               <div class="gui-section-heading">
-                <div><h2 id="appearance-title">Accent color</h2><p>Choose the highlight color for your overlay.</p></div>
+                <div><h2 id="appearance-title">Themes</h2><p>Pick a preset or design your own color theme.</p></div>
                 <span class="tag">THEME</span>
               </div>
               <div class="gui-accent-options" role="group" aria-label="Accent color">
-                <button class="gui-accent is-selected" type="button" data-accent="cyan" aria-pressed="true"><span class="swatch swatch-cyan"></span>Cyan<span class="choice-check">✓</span></button>
-                <button class="gui-accent" type="button" data-accent="violet" aria-pressed="false"><span class="swatch swatch-violet"></span>Violet<span class="choice-check">✓</span></button>
-                <button class="gui-accent" type="button" data-accent="amber" aria-pressed="false"><span class="swatch swatch-amber"></span>Amber<span class="choice-check">✓</span></button>
+                <button class="gui-accent" type="button" data-accent="cyan" aria-pressed="false"><span class="swatch" style="--swatch-color:#55eaff"></span>Cyan<span class="choice-check">✓</span></button>
+                <button class="gui-accent" type="button" data-accent="violet" aria-pressed="false"><span class="swatch" style="--swatch-color:#ae8bff"></span>Violet<span class="choice-check">✓</span></button>
+                <button class="gui-accent" type="button" data-accent="amber" aria-pressed="false"><span class="swatch" style="--swatch-color:#ffc567"></span>Amber<span class="choice-check">✓</span></button>
+                <button class="gui-accent" type="button" data-accent="lime" aria-pressed="false"><span class="swatch" style="--swatch-color:#9bff75"></span>Lime<span class="choice-check">✓</span></button>
+                <button class="gui-accent" type="button" data-accent="rose" aria-pressed="false"><span class="swatch" style="--swatch-color:#ff6b9b"></span>Rose<span class="choice-check">✓</span></button>
+                <button class="gui-accent" type="button" data-accent="ice" aria-pressed="false"><span class="swatch" style="--swatch-color:#75a7ff"></span>Ice<span class="choice-check">✓</span></button>
+                <button class="gui-accent" type="button" data-accent="custom" aria-pressed="false"><span class="swatch" id="custom-theme-swatch" style="--swatch-color:#55eaff"></span><span id="custom-theme-name">My theme</span><span class="choice-check">✓</span></button>
+              </div>
+              <div class="custom-theme-editor">
+                <label>Theme name <input id="custom-theme-name-input" type="text" maxlength="24" value="My theme" autocomplete="off"></label>
+                <label>Accent color <input id="custom-theme-color" type="color" value="#55eaff" aria-label="Custom theme accent color"></label>
+                <button class="keybind-button" id="save-custom-theme" type="button">SAVE MY THEME</button>
               </div>
             </section>
 

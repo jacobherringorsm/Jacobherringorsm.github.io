@@ -1,4 +1,5 @@
 const frame = document.querySelector("#client-frame");
+const gameShell = document.querySelector(".game-shell");
 const loadingStatus = document.querySelector("#game-loading");
 const clickgui = document.querySelector("#clickgui");
 const guiTrigger = document.querySelector("#gui-trigger");
@@ -16,8 +17,22 @@ const keystrokesWidget = document.querySelector("#keystrokes-widget");
 const cpsWidget = document.querySelector("#cps-widget");
 const leftCps = document.querySelector("#left-cps");
 const rightCps = document.querySelector("#right-cps");
+const customThemeNameInput = document.querySelector("#custom-theme-name-input");
+const customThemeColorInput = document.querySelector("#custom-theme-color");
+const customThemeName = document.querySelector("#custom-theme-name");
+const customThemeSwatch = document.querySelector("#custom-theme-swatch");
+const saveCustomThemeButton = document.querySelector("#save-custom-theme");
+const presetThemes = {
+  cyan: { name: "Cyan", color: "#55eaff" },
+  violet: { name: "Violet", color: "#ae8bff" },
+  amber: { name: "Amber", color: "#ffc567" },
+  lime: { name: "Lime", color: "#9bff75" },
+  rose: { name: "Rose", color: "#ff6b9b" },
+  ice: { name: "Ice", color: "#75a7ff" },
+};
 const defaultSettings = {
   accent: "cyan",
+  customTheme: { name: "My theme", color: "#55eaff" },
   showBadge: true,
   compactGui: false,
   reducedMotion: false,
@@ -65,10 +80,28 @@ function formatKey(code) {
   return code.replace(/^Key/, "").replace(/^Digit/, "").replace(/([A-Z])/g, " $1").trim().toUpperCase();
 }
 
+function hexToRgb(hex) {
+  const value = Number.parseInt(hex.slice(1), 16);
+  return `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`;
+}
+
+function currentTheme() {
+  if (settings.accent === "custom") return settings.customTheme;
+  return presetThemes[settings.accent] ?? presetThemes.cyan;
+}
+
 function applySettings() {
   document.documentElement.dataset.accent = settings.accent;
+  const theme = currentTheme();
+  document.documentElement.style.setProperty("--accent", theme.color);
+  document.documentElement.style.setProperty("--accent-rgb", hexToRgb(theme.color));
+  document.documentElement.style.setProperty("--accent-soft", `rgba(${hexToRgb(theme.color)}, .12)`);
   document.documentElement.dataset.compactGui = String(settings.compactGui);
   document.documentElement.dataset.reducedMotion = String(settings.reducedMotion);
+  customThemeName.textContent = settings.customTheme.name || "My theme";
+  customThemeNameInput.value = settings.customTheme.name || "My theme";
+  customThemeColorInput.value = settings.customTheme.color;
+  customThemeSwatch.style.setProperty("--swatch-color", settings.customTheme.color);
   badge.hidden = !settings.showBadge;
   keybindButton.textContent = formatKey(settings.keybind);
   keybindLabel.textContent = formatKey(settings.keybind);
@@ -153,6 +186,20 @@ async function saveSettings() {
 }
 
 function setClickguiOpen(open) {
+  if (open) {
+    try {
+      const gameDocument = frame.contentDocument;
+      if (document.pointerLockElement || gameDocument?.pointerLockElement) {
+        document.exitPointerLock();
+        gameDocument?.exitPointerLock();
+      }
+    } catch (error) {
+      console.warn("Could not release the game mouse pointer lock.", error);
+    }
+    gameShell.classList.add("gui-open");
+  } else {
+    gameShell.classList.remove("gui-open");
+  }
   clickgui.hidden = !open;
   guiTrigger.setAttribute("aria-expanded", String(open));
   if (open) closeGuiButton.focus();
@@ -181,6 +228,10 @@ function handleKeydown(event) {
     event.preventDefault();
     event.stopPropagation();
     setClickguiOpen(clickgui.hidden);
+  } else if (event.code === "Escape" && !clickgui.hidden) {
+    event.preventDefault();
+    event.stopPropagation();
+    setClickguiOpen(false);
   }
 }
 
@@ -318,6 +369,26 @@ for (const button of document.querySelectorAll("[data-accent]")) {
   });
 }
 
+customThemeNameInput.addEventListener("input", () => {
+  const name = customThemeNameInput.value.trim().slice(0, 24) || "My theme";
+  customThemeName.textContent = name;
+});
+
+customThemeColorInput.addEventListener("input", () => {
+  customThemeSwatch.style.setProperty("--swatch-color", customThemeColorInput.value);
+});
+
+saveCustomThemeButton.addEventListener("click", () => {
+  settings.customTheme = {
+    name: customThemeNameInput.value.trim().slice(0, 24) || "My theme",
+    color: customThemeColorInput.value,
+  };
+  settings.accent = "custom";
+  applySettings();
+  saveSettings();
+  showToast(`Theme "${settings.customTheme.name}" saved.`);
+});
+
 keybindButton.addEventListener("click", () => {
   waitingForKey = true;
   keybindButton.textContent = "PRESS A KEY…";
@@ -332,7 +403,19 @@ async function startGame() {
     ]);
 
     settings = { ...defaultSettings, ...(savedSettings ?? {}) };
-    if (!["cyan", "violet", "amber"].includes(settings.accent)) settings.accent = defaultSettings.accent;
+    if (!Object.hasOwn(presetThemes, settings.accent) && settings.accent !== "custom") {
+      settings.accent = defaultSettings.accent;
+    }
+    if (
+      !settings.customTheme ||
+      typeof settings.customTheme !== "object" ||
+      !/^#[0-9a-f]{6}$/i.test(settings.customTheme.color) ||
+      typeof settings.customTheme.name !== "string"
+    ) {
+      settings.customTheme = { ...defaultSettings.customTheme };
+    } else {
+      settings.customTheme.name = settings.customTheme.name.trim().slice(0, 24) || "My theme";
+    }
     if (typeof settings.keybind !== "string" || !settings.keybind) settings.keybind = defaultSettings.keybind;
     if (!["dot", "circle", "dynamic", "t"].includes(settings.crosshairStyle)) settings.crosshairStyle = defaultSettings.crosshairStyle;
     if (!/^#[0-9a-f]{6}$/i.test(settings.crosshairColor)) settings.crosshairColor = defaultSettings.crosshairColor;
