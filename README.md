@@ -20,7 +20,7 @@ The public launcher is published at <https://jacobherringorsm.github.io/> from t
 
 The public Pages deployment includes the authorized standalone Eaglercraft 26.2 HTML build, so the built-in client launches without selecting a file. The game file is hosted publicly and downloads when a player launches it. The launcher can also use an optional local HTML or ZIP client saved in the browser's IndexedDB. This source repository intentionally omits the large client artifact.
 
-The ClickGUI opens with **Right Shift** by default; opening it releases pointer lock so the mouse can operate its controls. Appearance includes Cyan, Violet, Amber, Lime, Rose, Ice, and a named custom accent theme. The overlay also supports a configurable crosshair, live keystrokes HUD, and left/right CPS counter; the HUD widgets can be dragged and their positions are saved locally. These overlay modules do not modify gameplay. Modules that require internal Eaglercraft game state or renderer hooks are not included.
+The ClickGUI opens with **Right Shift** by default; opening it releases pointer lock so the mouse can operate its controls, and closing it returns keyboard focus to the game. Appearance includes Cyan, Violet, Amber, Lime, Rose, Ice, and a named custom accent theme. The overlay also supports a configurable crosshair, live keystrokes HUD, browser-FPS estimate, and left/right CPS counter; HUD widgets can be dragged and their positions are saved locally. Features that require internal game state, network data, or renderer hooks are listed as unavailable in the ClickGUI rather than shown as working toggles.
 
 ## Scope
 

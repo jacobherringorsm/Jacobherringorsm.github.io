@@ -84,6 +84,12 @@
                   <span class="switch" aria-hidden="true"></span>
                 </label>
                 <label class="gui-module">
+                  <span class="gui-module-icon">▥</span>
+                  <span class="gui-module-copy"><strong>FPS estimate</strong><small>Show the browser's current frame rate.</small></span>
+                  <input class="switch-input" type="checkbox" data-pref="showFps" aria-label="FPS estimate">
+                  <span class="switch" aria-hidden="true"></span>
+                </label>
+                <label class="gui-module">
                   <span class="gui-module-icon">⊕</span>
                   <span class="gui-module-copy"><strong>Custom crosshair</strong><small>Draw an overlay crosshair at screen center.</small></span>
                   <input class="switch-input" type="checkbox" data-pref="showCrosshair" aria-label="Custom crosshair">
@@ -109,6 +115,20 @@
                   <label>Size <input id="crosshair-size" type="range" min="3" max="12" value="5" aria-label="Crosshair size"></label>
                 </div>
               </div>
+              <details class="unavailable-modules">
+                <summary>Game integration required <span>These need internal client hooks</span></summary>
+                <div class="unavailable-grid">
+                  <div><strong>Fullbright, zoom, culling, low fire, clear water</strong><small>Requires renderer, lighting, and FOV controls.</small></div>
+                  <div><strong>Ping, armor, potion, coordinates, direction HUDs</strong><small>Requires live network and player-state access.</small></div>
+                  <div><strong>ToggleSprint / ToggleSneak</strong><small>Requires client movement input integration.</small></div>
+                  <div><strong>Totem counter and pop tracker</strong><small>Requires inventory and entity-status events.</small></div>
+                  <div><strong>Chat macros</strong><small>Requires a chat API; sending synthetic chat is intentionally not used.</small></div>
+                  <div><strong>Crystal delay and anchor indicator</strong><small>Requires entity targeting and world interaction hooks.</small></div>
+                  <div><strong>Player / mob hitbox outlines</strong><small>Requires entity bounds and renderer access.</small></div>
+                  <div><strong>Capes, wings, custom menu, server list</strong><small>Requires client model, menu, and connection integration.</small></div>
+                  <div><strong>Texture pack manager</strong><small>Browser storage alone cannot apply packs without client support.</small></div>
+                </div>
+              </details>
             </section>
 
             <section class="gui-screen" data-screen-panel="appearance" aria-labelledby="appearance-title" hidden>
@@ -146,6 +166,7 @@
         <div class="cps-widget" id="cps-widget" hidden>
           <span>LMB <b id="left-cps">0</b></span><span>RMB <b id="right-cps">0</b></span>
         </div>
+        <div class="fps-widget" id="fps-widget" hidden><b id="fps-value">0</b> <span>FPS</span></div>
         <div class="keystrokes-widget" id="keystrokes-widget" hidden>
           <div class="key-row"><kbd data-key="KeyW">W</kbd></div>
           <div class="key-row"><kbd data-key="KeyA">A</kbd><kbd data-key="KeyS">S</kbd><kbd data-key="KeyD">D</kbd></div>

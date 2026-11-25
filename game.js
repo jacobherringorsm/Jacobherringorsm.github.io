@@ -17,6 +17,8 @@ const keystrokesWidget = document.querySelector("#keystrokes-widget");
 const cpsWidget = document.querySelector("#cps-widget");
 const leftCps = document.querySelector("#left-cps");
 const rightCps = document.querySelector("#right-cps");
+const fpsWidget = document.querySelector("#fps-widget");
+const fpsValue = document.querySelector("#fps-value");
 const customThemeNameInput = document.querySelector("#custom-theme-name-input");
 const customThemeColorInput = document.querySelector("#custom-theme-color");
 const customThemeName = document.querySelector("#custom-theme-name");
@@ -38,6 +40,7 @@ const defaultSettings = {
   reducedMotion: false,
   showKeystrokes: false,
   showCps: false,
+  showFps: false,
   showCrosshair: false,
   crosshairStyle: "dot",
   crosshairColor: "#55eaff",
@@ -108,6 +111,7 @@ function applySettings() {
   footerKeybind.textContent = formatKey(settings.keybind);
   keystrokesWidget.hidden = !settings.showKeystrokes;
   cpsWidget.hidden = !settings.showCps;
+  fpsWidget.hidden = !settings.showFps;
   crosshair.hidden = !settings.showCrosshair;
   crosshair.className = `crosshair crosshair-${settings.crosshairStyle}`;
   crosshair.style.setProperty("--crosshair-color", settings.crosshairColor);
@@ -203,7 +207,10 @@ function setClickguiOpen(open) {
   clickgui.hidden = !open;
   guiTrigger.setAttribute("aria-expanded", String(open));
   if (open) closeGuiButton.focus();
-  else guiTrigger.focus();
+  else {
+    frame.focus({ preventScroll: true });
+    frame.contentWindow?.focus();
+  }
 }
 
 function handleKeydown(event) {
@@ -310,6 +317,20 @@ function attachGameInputListeners() {
 
 frame.addEventListener("load", attachGameInputListeners);
 window.setInterval(updateCps, 100);
+
+let fpsFrames = 0;
+let fpsSampleStart = performance.now();
+function sampleBrowserFps(now) {
+  fpsFrames++;
+  const elapsed = now - fpsSampleStart;
+  if (elapsed >= 1000) {
+    fpsValue.textContent = String(Math.round((fpsFrames * 1000) / elapsed));
+    fpsFrames = 0;
+    fpsSampleStart = now;
+  }
+  window.requestAnimationFrame(sampleBrowserFps);
+}
+window.requestAnimationFrame(sampleBrowserFps);
 
 guiTrigger.addEventListener("click", () => setClickguiOpen(clickgui.hidden));
 closeGuiButton.addEventListener("click", () => setClickguiOpen(false));
