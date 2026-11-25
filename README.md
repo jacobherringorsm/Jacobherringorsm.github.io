@@ -1,7 +1,7 @@
-# Neon Client Launcher
+# Neon Client
 
-Public launcher: <https://jacobherringorsm.github.io/>
+Launcher: <https://jacobherringorsm.github.io/>
 
-Install a standalone Eaglercraft 26.2 HTML client or a ZIP containing one from the launcher. The client file is extracted locally and saved in this browser; it is not hosted or uploaded by this site. Click **Launch 26.2 client** to play with the original Neon ClickGUI overlay. Right Shift opens the ClickGUI by default.
+Includes the authorized Eaglercraft 26.2 standalone HTML build. Click **Launch Neon Client** to start without uploading a client file. The game downloads from this site when launched. You may optionally choose a different HTML/ZIP build; that alternate is saved only in your browser.
 
-The overlay currently changes its own appearance only. It does not modify gameplay or include Eaglercraft/Minecraft code or assets. Only load client builds you trust.
+The original ClickGUI overlay opens with **Right Shift**. It includes a draggable local CPS counter, live keystrokes overlay, and configurable crosshair. These overlay modules do not modify gameplay. Only load client builds you trust.

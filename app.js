@@ -243,11 +243,8 @@ for (const button of document.querySelectorAll("[data-notice]")) {
 chooseClientButton.addEventListener("click", () => clientFileInput.click());
 
 function markClientInstalled(name, message) {
-  launchClientLink.hidden = false;
-  launchClientLink.setAttribute("aria-disabled", "false");
-  launchClientLink.removeAttribute("tabindex");
   removeClientButton.hidden = false;
-  chooseClientButton.textContent = "Choose a different file";
+  chooseClientButton.textContent = "Replace alternate client";
   selectedFileStatus.textContent = message;
 }
 
@@ -259,10 +256,12 @@ async function restoreInstalledClient() {
         client.name,
         `${client.name} is installed in this browser. You can launch it without selecting the file again.`,
       );
+    } else {
+      selectedFileStatus.textContent = "Eaglercraft 26.2 is built in. Launch directly, or choose an alternate HTML client to use instead.";
     }
   } catch (error) {
     console.error("Unable to read the saved client.", error);
-    selectedFileStatus.textContent = error instanceof Error ? error.message : "Unable to read the saved client.";
+    selectedFileStatus.textContent = `Built-in Eaglercraft is ready. Could not check for an alternate client: ${error instanceof Error ? error.message : "storage unavailable."}`;
   }
 }
 
@@ -305,12 +304,9 @@ removeClientButton.addEventListener("click", async () => {
   removeClientButton.disabled = true;
   try {
     await NeonClientStorage.removeClient();
-    launchClientLink.hidden = true;
-    launchClientLink.setAttribute("aria-disabled", "true");
-    launchClientLink.setAttribute("tabindex", "-1");
     removeClientButton.hidden = true;
-    chooseClientButton.textContent = "Choose client file";
-    selectedFileStatus.textContent = "Saved client removed from this browser.";
+    chooseClientButton.textContent = "Choose alternate client";
+    selectedFileStatus.textContent = "Using the built-in Eaglercraft 26.2 client.";
   } catch (error) {
     console.error("Unable to remove the saved client.", error);
     selectedFileStatus.textContent = error instanceof Error ? error.message : "Unable to remove the saved client.";
@@ -324,7 +320,7 @@ launchClientLink.addEventListener("click", (event) => {
     event.preventDefault();
     return;
   }
-  showNotice("Opening the saved client and ClickGUI in a new tab.");
+  showNotice("Opening Neon Client in a new tab.");
 });
 
 showPanel("home");

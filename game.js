@@ -8,17 +8,38 @@ const keybindButton = document.querySelector("#keybind-button");
 const keybindLabel = document.querySelector("#keybind-label");
 const footerKeybind = document.querySelector("#footer-keybind");
 const toast = document.querySelector("#game-toast");
+const crosshair = document.querySelector("#custom-crosshair");
+const crosshairStyle = document.querySelector("#crosshair-style");
+const crosshairColor = document.querySelector("#crosshair-color");
+const crosshairSize = document.querySelector("#crosshair-size");
+const keystrokesWidget = document.querySelector("#keystrokes-widget");
+const cpsWidget = document.querySelector("#cps-widget");
+const leftCps = document.querySelector("#left-cps");
+const rightCps = document.querySelector("#right-cps");
 const defaultSettings = {
   accent: "cyan",
   showBadge: true,
   compactGui: false,
   reducedMotion: false,
+  showKeystrokes: false,
+  showCps: false,
+  showCrosshair: false,
+  crosshairStyle: "dot",
+  crosshairColor: "#55eaff",
+  crosshairSize: 5,
+  hudPositions: {},
   keybind: "ShiftRight",
 };
 let settings = { ...defaultSettings };
 let waitingForKey = false;
 let toastTimer;
 let clientObjectUrl;
+let leftClickTimes = [];
+let rightClickTimes = [];
+let dynamicCrosshairTimer;
+const pressedKeys = new Set();
+const pressedMouseButtons = new Set();
+const hudDragStates = new Map();
 
 function showToast(message) {
   toast.textContent = message;
@@ -52,6 +73,17 @@ function applySettings() {
   keybindButton.textContent = formatKey(settings.keybind);
   keybindLabel.textContent = formatKey(settings.keybind);
   footerKeybind.textContent = formatKey(settings.keybind);
+  keystrokesWidget.hidden = !settings.showKeystrokes;
+  cpsWidget.hidden = !settings.showCps;
+  crosshair.hidden = !settings.showCrosshair;
+  crosshair.className = `crosshair crosshair-${settings.crosshairStyle}`;
+  crosshair.style.setProperty("--crosshair-color", settings.crosshairColor);
+  crosshair.style.setProperty("--crosshair-size", `${settings.crosshairSize}px`);
+  crosshairStyle.value = settings.crosshairStyle;
+  crosshairColor.value = settings.crosshairColor;
+  crosshairSize.value = String(settings.crosshairSize);
+  applyHudPosition(keystrokesWidget, "keystrokes");
+  applyHudPosition(cpsWidget, "cps");
   for (const input of document.querySelectorAll("[data-pref]")) {
     input.checked = Boolean(settings[input.dataset.pref]);
   }
@@ -61,6 +93,55 @@ function applySettings() {
     button.setAttribute("aria-pressed", String(selected));
   }
 }
+
+function applyHudPosition(element, name) {
+  const position = settings.hudPositions?.[name];
+  if (!position || !Number.isFinite(position.left) || !Number.isFinite(position.top)) return;
+  element.style.left = `${Math.max(0, Math.min(window.innerWidth - element.offsetWidth, position.left))}px`;
+  element.style.top = `${Math.max(0, Math.min(window.innerHeight - element.offsetHeight, position.top))}px`;
+  element.style.right = "auto";
+  element.style.bottom = "auto";
+}
+
+function enableHudDragging(element, name) {
+  element.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    const rect = element.getBoundingClientRect();
+    hudDragStates.set(name, { pointerId: event.pointerId, offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top });
+    element.style.left = `${rect.left}px`;
+    element.style.top = `${rect.top}px`;
+    element.style.right = "auto";
+    element.style.bottom = "auto";
+    element.classList.add("is-dragging");
+    element.setPointerCapture(event.pointerId);
+  });
+
+  element.addEventListener("pointermove", (event) => {
+    const drag = hudDragStates.get(name);
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const left = Math.max(0, Math.min(window.innerWidth - element.offsetWidth, event.clientX - drag.offsetX));
+    const top = Math.max(0, Math.min(window.innerHeight - element.offsetHeight, event.clientY - drag.offsetY));
+    element.style.left = `${left}px`;
+    element.style.top = `${top}px`;
+  });
+
+  const finishDrag = (event) => {
+    const drag = hudDragStates.get(name);
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    hudDragStates.delete(name);
+    element.classList.remove("is-dragging");
+    settings.hudPositions[name] = {
+      left: Number.parseFloat(element.style.left),
+      top: Number.parseFloat(element.style.top),
+    };
+    saveSettings();
+  };
+  element.addEventListener("pointerup", finishDrag);
+  element.addEventListener("pointercancel", finishDrag);
+}
+
+enableHudDragging(keystrokesWidget, "keystrokes");
+enableHudDragging(cpsWidget, "cps");
 
 async function saveSettings() {
   try {
@@ -104,13 +185,80 @@ function handleKeydown(event) {
 }
 
 document.addEventListener("keydown", handleKeydown, true);
-frame.addEventListener("load", () => {
-  try {
-    frame.contentWindow.addEventListener("keydown", handleKeydown, true);
-  } catch (error) {
-    console.warn("The ClickGUI hotkey could not be attached to the game frame.", error);
+function setPressedKey(code, pressed) {
+  if (!["KeyW", "KeyA", "KeyS", "KeyD", "Space"].includes(code)) return;
+  if (pressed) pressedKeys.add(code);
+  else pressedKeys.delete(code);
+  document.querySelector(`[data-key="${code}"]`)?.classList.toggle("is-pressed", pressed);
+}
+
+function setPressedMouse(button, pressed) {
+  const code = button === 0 ? "MouseLeft" : button === 2 ? "MouseRight" : undefined;
+  if (!code) return;
+  if (pressed) pressedMouseButtons.add(code);
+  else pressedMouseButtons.delete(code);
+  document.querySelector(`[data-key="${code}"]`)?.classList.toggle("is-pressed", pressed);
+}
+
+function recordClick(button) {
+  const now = Date.now();
+  if (button === 0) leftClickTimes.push(now);
+  else if (button === 2) rightClickTimes.push(now);
+  updateCps();
+}
+
+function updateCps() {
+  const cutoff = Date.now() - 1000;
+  leftClickTimes = leftClickTimes.filter((time) => time > cutoff);
+  rightClickTimes = rightClickTimes.filter((time) => time > cutoff);
+  leftCps.textContent = String(leftClickTimes.length);
+  rightCps.textContent = String(rightClickTimes.length);
+}
+
+function markCrosshairMovement() {
+  if (settings.crosshairStyle !== "dynamic") return;
+  crosshair.dataset.moving = "true";
+  window.clearTimeout(dynamicCrosshairTimer);
+  dynamicCrosshairTimer = window.setTimeout(() => {
+    delete crosshair.dataset.moving;
+  }, 140);
+}
+
+function resetPressedInputs() {
+  for (const code of pressedKeys) setPressedKey(code, false);
+  for (const code of pressedMouseButtons) {
+    const button = code === "MouseLeft" ? 0 : 2;
+    setPressedMouse(button, false);
   }
-});
+}
+
+function attachGameInputListeners() {
+  try {
+    const gameWindow = frame.contentWindow;
+    const gameDocument = frame.contentDocument;
+    if (!gameWindow || !gameDocument) return;
+
+    gameWindow.addEventListener("keydown", (event) => {
+      handleKeydown(event);
+      setPressedKey(event.code, true);
+      markCrosshairMovement();
+    }, true);
+    gameWindow.addEventListener("keyup", (event) => setPressedKey(event.code, false), true);
+    gameWindow.addEventListener("blur", resetPressedInputs);
+    gameDocument.addEventListener("pointerdown", (event) => {
+      setPressedMouse(event.button, true);
+      recordClick(event.button);
+    }, true);
+    gameDocument.addEventListener("pointerup", (event) => setPressedMouse(event.button, false), true);
+    gameDocument.addEventListener("pointercancel", resetPressedInputs, true);
+    gameDocument.addEventListener("mousemove", markCrosshairMovement, { passive: true });
+  } catch (error) {
+    console.warn("Game input overlays could not attach to the client frame.", error);
+  }
+}
+
+frame.addEventListener("load", attachGameInputListeners);
+window.setInterval(updateCps, 100);
 
 guiTrigger.addEventListener("click", () => setClickguiOpen(clickgui.hidden));
 closeGuiButton.addEventListener("click", () => setClickguiOpen(false));
@@ -144,6 +292,24 @@ for (const input of document.querySelectorAll("[data-pref]")) {
   });
 }
 
+crosshairStyle.addEventListener("change", () => {
+  settings.crosshairStyle = crosshairStyle.value;
+  applySettings();
+  saveSettings();
+});
+
+crosshairColor.addEventListener("input", () => {
+  settings.crosshairColor = crosshairColor.value;
+  applySettings();
+});
+crosshairColor.addEventListener("change", saveSettings);
+
+crosshairSize.addEventListener("input", () => {
+  settings.crosshairSize = Number(crosshairSize.value);
+  applySettings();
+});
+crosshairSize.addEventListener("change", saveSettings);
+
 for (const button of document.querySelectorAll("[data-accent]")) {
   button.addEventListener("click", () => {
     settings.accent = button.dataset.accent;
@@ -164,28 +330,31 @@ async function startGame() {
       NeonClientStorage.getClient(),
       NeonClientStorage.getSettings(),
     ]);
-    if (!client?.blob) {
-      const message = document.createElement("span");
-      message.append("No client is installed in this browser. ");
-      const link = document.createElement("a");
-      link.href = "./";
-      link.textContent = "Return to the launcher";
-      message.append(link, " to install one.");
-      loadingStatus.replaceChildren(message);
-      return;
-    }
 
     settings = { ...defaultSettings, ...(savedSettings ?? {}) };
     if (!["cyan", "violet", "amber"].includes(settings.accent)) settings.accent = defaultSettings.accent;
     if (typeof settings.keybind !== "string" || !settings.keybind) settings.keybind = defaultSettings.keybind;
+    if (!["dot", "circle", "dynamic", "t"].includes(settings.crosshairStyle)) settings.crosshairStyle = defaultSettings.crosshairStyle;
+    if (!/^#[0-9a-f]{6}$/i.test(settings.crosshairColor)) settings.crosshairColor = defaultSettings.crosshairColor;
+    if (!Number.isFinite(Number(settings.crosshairSize))) settings.crosshairSize = defaultSettings.crosshairSize;
+    settings.crosshairSize = Math.min(12, Math.max(3, Number(settings.crosshairSize)));
+    if (!settings.hudPositions || typeof settings.hudPositions !== "object") settings.hudPositions = {};
     applySettings();
-    clientObjectUrl = URL.createObjectURL(client.blob);
-    frame.src = clientObjectUrl;
+    if (client?.blob instanceof Blob) {
+      clientObjectUrl = URL.createObjectURL(client.blob);
+      frame.src = clientObjectUrl;
+    } else {
+      frame.src = "./eaglercraft-26.2.html";
+    }
     frame.hidden = false;
     loadingStatus.hidden = true;
   } catch (error) {
     console.error("Unable to load the installed client.", error);
-    loadingStatus.textContent = error instanceof Error ? error.message : "Unable to load the installed client.";
+    settings = { ...defaultSettings };
+    applySettings();
+    frame.src = "./eaglercraft-26.2.html";
+    frame.hidden = false;
+    loadingStatus.hidden = true;
   }
 }
 

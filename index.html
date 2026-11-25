@@ -68,17 +68,14 @@
               <p>A neon-inspired control center for a client built around your play style.</p>
               <div class="launch-controls">
                 <input id="client-file" class="file-input" type="file" accept=".html,.htm,.zip,text/html,application/zip" aria-label="Choose a standalone Eaglercraft client HTML file or ZIP">
-                <button class="button button-primary" id="choose-client" type="button">
-                  <span aria-hidden="true">＋</span> Choose client file
-                </button>
-                <a class="button button-primary launch-link" id="launch-client" href="game.html" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1" hidden>
-                  <span aria-hidden="true">▶</span> Launch 26.2 client
+                <a class="button button-primary launch-link" id="launch-client" href="game.html" target="_blank" rel="noopener noreferrer">
+                  <span aria-hidden="true">▶</span> Launch Neon Client
                 </a>
-                <button class="button button-secondary" id="remove-client" type="button" hidden>Remove saved client</button>
-                <a class="download-link" href="https://eaglercraft.com/downloads" target="_blank" rel="noopener noreferrer">Get the client from Eaglercraft downloads ↗</a>
+                <button class="button button-secondary" id="choose-client" type="button">Choose alternate client</button>
+                <button class="button button-secondary" id="remove-client" type="button" hidden>Use built-in client</button>
               </div>
-              <p class="selected-file" id="selected-file" role="status" aria-live="polite">Choose a standalone 26.2 HTML build or a ZIP containing one. Files stay on your device; only open builds you trust.</p>
-              <p class="selected-file">Install once per browser. The client stays in this browser's local storage and is never uploaded.</p>
+              <p class="selected-file" id="selected-file" role="status" aria-live="polite">Eaglercraft 26.2 is built in. Launch directly, or choose an alternate HTML client to use instead.</p>
+              <p class="selected-file">The built-in game is hosted with this site and downloads when you launch it.</p>
             </div>
             <div class="hero-art" aria-hidden="true">
               <div class="orbit orbit-one"></div>
@@ -110,7 +107,7 @@
             </button>
           </div>
 
-          <footer class="footer-note"><span class="footer-mark" aria-hidden="true">✦</span> An original interface concept — no game files or assets included.</footer>
+          <footer class="footer-note"><span class="footer-mark" aria-hidden="true">✦</span> Original Neon overlay with a built-in Eaglercraft 26.2 client.</footer>
         </section>
 
         <section class="panel" id="panel-appearance" aria-labelledby="appearance-title" hidden>
@@ -179,12 +176,12 @@
         <section class="panel" id="panel-about" aria-labelledby="about-title" hidden>
           <div class="page-heading">
             <div class="eyebrow"><span class="eyebrow-line"></span> PROJECT NOTES</div>
-            <h1 id="about-title">About this prototype</h1>
-            <p>A first look at an original dark-neon interface for a future 26.2 client customization.</p>
+            <h1 id="about-title">About Neon Client</h1>
+            <p>An original dark-neon launcher and visual overlay for Eaglercraft 26.2.</p>
           </div>
           <div class="settings-card about-card">
             <span class="about-symbol" aria-hidden="true">N</span>
-            <div><h2>Independent UI concept</h2><p>The selected standalone client opens in a separate tab; this prototype does not modify its menus or gameplay. It includes no Eaglercraft, Minecraft, or game assets. In-client changes need a documented add-on interface and source you are authorized to change.</p></div>
+            <div><h2>Neon launcher and overlay</h2><p>The Eaglercraft 26.2 build is included with permission and runs inside the game view. The ClickGUI adds browser-side visual modules; features that need internal game or renderer hooks are not included.</p></div>
           </div>
         </section>
 

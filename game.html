@@ -71,10 +71,43 @@
                   <input class="switch-input" type="checkbox" data-pref="reducedMotion" aria-label="Reduce motion">
                   <span class="switch" aria-hidden="true"></span>
                 </label>
+                <label class="gui-module">
+                  <span class="gui-module-icon">⌨</span>
+                  <span class="gui-module-copy"><strong>Keystrokes HUD</strong><small>Show movement and mouse inputs.</small></span>
+                  <input class="switch-input" type="checkbox" data-pref="showKeystrokes" aria-label="Keystrokes HUD">
+                  <span class="switch" aria-hidden="true"></span>
+                </label>
+                <label class="gui-module">
+                  <span class="gui-module-icon">◉</span>
+                  <span class="gui-module-copy"><strong>CPS counter</strong><small>Count your own left and right clicks.</small></span>
+                  <input class="switch-input" type="checkbox" data-pref="showCps" aria-label="CPS counter">
+                  <span class="switch" aria-hidden="true"></span>
+                </label>
+                <label class="gui-module">
+                  <span class="gui-module-icon">⊕</span>
+                  <span class="gui-module-copy"><strong>Custom crosshair</strong><small>Draw an overlay crosshair at screen center.</small></span>
+                  <input class="switch-input" type="checkbox" data-pref="showCrosshair" aria-label="Custom crosshair">
+                  <span class="switch" aria-hidden="true"></span>
+                </label>
               </div>
               <div class="keybind-row">
                 <span><strong>Open ClickGUI</strong><small>Change the key that opens this menu.</small></span>
                 <button class="keybind-button" id="keybind-button" type="button">RIGHT SHIFT</button>
+              </div>
+              <div class="crosshair-settings">
+                <div class="crosshair-heading"><strong>Custom crosshair</strong><small>Drawn by the overlay; choose a style and color.</small></div>
+                <div class="crosshair-controls">
+                  <label>Style
+                    <select id="crosshair-style">
+                      <option value="dot">Dot</option>
+                      <option value="circle">Circle</option>
+                      <option value="dynamic">Dynamic</option>
+                      <option value="t">T-shape</option>
+                    </select>
+                  </label>
+                  <label>Color <input id="crosshair-color" type="color" value="#55eaff" aria-label="Crosshair color"></label>
+                  <label>Size <input id="crosshair-size" type="range" min="3" max="12" value="5" aria-label="Crosshair size"></label>
+                </div>
               </div>
             </section>
 
@@ -93,6 +126,23 @@
             <footer class="gui-footer"><span id="footer-keybind">Right Shift</span> toggles the ClickGUI <span class="footer-divider">·</span> Settings save in this browser</footer>
           </div>
         </section>
+      </div>
+
+      <div class="game-hud" id="game-hud" aria-hidden="true">
+        <div class="crosshair crosshair-dot" id="custom-crosshair">
+          <i class="crosshair-part top"></i><i class="crosshair-part right"></i>
+          <i class="crosshair-part bottom"></i><i class="crosshair-part left"></i>
+          <i class="crosshair-part center"></i>
+        </div>
+        <div class="cps-widget" id="cps-widget" hidden>
+          <span>LMB <b id="left-cps">0</b></span><span>RMB <b id="right-cps">0</b></span>
+        </div>
+        <div class="keystrokes-widget" id="keystrokes-widget" hidden>
+          <div class="key-row"><kbd data-key="KeyW">W</kbd></div>
+          <div class="key-row"><kbd data-key="KeyA">A</kbd><kbd data-key="KeyS">S</kbd><kbd data-key="KeyD">D</kbd></div>
+          <div class="key-row"><kbd class="space-key" data-key="Space">SPACE</kbd></div>
+          <div class="key-row"><kbd data-key="MouseLeft">LMB</kbd><kbd data-key="MouseRight">RMB</kbd></div>
+        </div>
       </div>
 
       <div class="game-toast" id="game-toast" role="status" aria-live="polite" hidden></div>
