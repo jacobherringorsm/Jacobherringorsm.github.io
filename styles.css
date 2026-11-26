@@ -237,45 +237,50 @@ h1, h2, p { margin: 0; }
 .game-shell.gui-open button, .game-shell.gui-open input, .game-shell.gui-open select, .game-shell.gui-open a, .game-shell.gui-open [role="button"] { cursor: pointer !important; }
 .game-shell.gui-open input[type="range"] { cursor: ew-resize !important; }
 .game-shell.gui-open input[type="text"] { cursor: text !important; }
-.clickgui-overlay { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; padding: 24px; background: rgba(4, 7, 13, .62); backdrop-filter: blur(5px); }
+.clickgui-overlay { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; padding: 24px; background: rgba(3, 7, 13, .72); backdrop-filter: blur(8px) saturate(125%); }
 .clickgui-overlay[hidden] { display: none; }
-.clickgui-window { display: grid; width: min(880px, calc(100vw - 32px)); min-height: 500px; max-height: min(620px, calc(100vh - 32px)); grid-template-columns: 190px minmax(0, 1fr); overflow: hidden; border: 1px solid rgba(var(--accent-rgb), .25); border-radius: 13px; background: #0c121e; box-shadow: 0 25px 100px rgba(0, 0, 0, .62), 0 0 35px rgba(var(--accent-rgb), .07); }
-.clickgui-sidebar { display: flex; flex-direction: column; padding: 21px 13px 15px; border-right: 1px solid var(--line); background: linear-gradient(180deg, #101a28, #0b111c); }
+.clickgui-window { display: grid; width: min(920px, calc(100vw - 32px)); height: min(700px, calc(100vh - 32px)); min-height: min(500px, calc(100vh - 32px)); max-height: min(700px, calc(100vh - 32px)); grid-template-columns: 200px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); overflow: hidden; border: 1px solid rgba(var(--accent-rgb), .32); border-radius: 16px; background: linear-gradient(145deg, #101a29 0%, #0b111c 75%); box-shadow: 0 30px 100px rgba(0, 0, 0, .68), 0 0 45px rgba(var(--accent-rgb), .1); }
+.clickgui-sidebar { display: flex; flex-direction: column; padding: 24px 14px 16px; border-right: 1px solid rgba(255,255,255,.07); background: linear-gradient(180deg, rgba(20,31,47,.98), rgba(11,17,28,.98)); }
 .gui-brand { display: flex; align-items: center; gap: 10px; padding: 0 4px; color: var(--text); font-size: 11px; font-weight: 800; letter-spacing: .15em; }
 .gui-brand small { display: block; margin-top: 3px; color: var(--muted); font-size: 8px; font-weight: 600; letter-spacing: .16em; }
 .gui-brand-icon { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgba(var(--accent-rgb), .45); border-radius: 9px; background: var(--accent-soft); color: var(--accent); font-size: 16px; }
 .gui-nav-label { margin: 35px 9px 10px; color: var(--dim); font-size: 8px; font-weight: 700; letter-spacing: .18em; }
 .gui-nav { display: grid; gap: 5px; }
-.gui-nav-item { display: flex; min-height: 37px; align-items: center; gap: 10px; padding: 0 10px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--muted); font-size: 10px; text-align: left; cursor: pointer; }
+.gui-nav-item { display: flex; min-height: 40px; align-items: center; gap: 10px; padding: 0 10px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: var(--muted); font-size: 11px; text-align: left; cursor: pointer; transition: background .16s ease, color .16s ease, border-color .16s ease; }
 .gui-nav-item > span { width: 15px; color: var(--dim); font-size: 14px; text-align: center; }
 .gui-nav-item:hover, .gui-nav-item.is-active { border-color: rgba(var(--accent-rgb), .17); background: var(--accent-soft); color: var(--accent); }
 .gui-nav-item.is-active > span { color: var(--accent); }
 .gui-sidebar-note { display: flex; align-items: center; gap: 8px; margin-top: auto; padding: 10px 6px 1px; color: var(--muted); font-size: 8px; }
 .gui-sidebar-note .status-dot { width: 6px; height: 6px; }
-.clickgui-content { display: flex; min-width: 0; min-height: 0; flex-direction: column; overflow-y: auto; padding: 25px 27px 15px; }
-.gui-header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
-.gui-header h1 { margin-top: 9px; font-size: 23px; font-weight: 680; letter-spacing: -.04em; }
+.clickgui-content { display: flex; min-width: 0; min-height: 0; flex-direction: column; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; padding: 25px 28px 18px; scrollbar-color: rgba(var(--accent-rgb), .55) rgba(255,255,255,.04); scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+.clickgui-content::-webkit-scrollbar { width: 9px; }
+.clickgui-content::-webkit-scrollbar-track { background: rgba(255,255,255,.035); }
+.clickgui-content::-webkit-scrollbar-thumb { border: 2px solid #0c121e; border-radius: 99px; background: rgba(var(--accent-rgb), .48); }
+.clickgui-content::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.gui-header { display: flex; flex: 0 0 auto; align-items: flex-start; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.gui-header h1 { margin-top: 9px; font-size: 27px; font-weight: 720; letter-spacing: -.045em; }
 .gui-close { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,255,255,.025); color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; }
 .gui-close:hover { border-color: rgba(var(--accent-rgb), .4); color: var(--accent); }
-.gui-screen { min-height: 0; flex: 1; overflow-y: auto; padding-top: 22px; }
+.gui-screen { min-height: 0; flex: 0 0 auto; overflow: visible; padding-top: 22px; }
 .gui-screen[hidden] { display: none; }
 .gui-section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
-.gui-section-heading h2 { font-size: 13px; font-weight: 650; }
-.gui-section-heading p { margin-top: 6px; color: var(--muted); font-size: 9px; }
-.gui-module-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 19px; }
-.gui-module { display: grid; min-height: 80px; grid-template-columns: 29px minmax(0, 1fr) 34px; align-items: center; gap: 9px; padding: 11px; border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,.018); cursor: pointer; }
-.gui-module:hover { border-color: rgba(var(--accent-rgb), .27); background: rgba(var(--accent-rgb), .035); }
-.gui-module-icon { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 7px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 700; }
+.gui-section-heading h2 { font-size: 15px; font-weight: 680; }
+.gui-section-heading p { margin-top: 6px; color: var(--muted); font-size: 10px; }
+.gui-module-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; margin-top: 20px; }
+.gui-module { display: grid; min-height: 88px; grid-template-columns: 34px minmax(0, 1fr) 34px; align-items: center; gap: 11px; padding: 13px; border: 1px solid rgba(255,255,255,.085); border-radius: 10px; background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018)); cursor: pointer; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+.gui-module:hover { transform: translateY(-1px); border-color: rgba(var(--accent-rgb), .42); background: linear-gradient(145deg, rgba(var(--accent-rgb), .09), rgba(255,255,255,.025)); box-shadow: 0 7px 20px rgba(0,0,0,.18); }
+.gui-module:focus-within { outline: 2px solid rgba(var(--accent-rgb), .65); outline-offset: 2px; }
+.gui-module-icon { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgba(var(--accent-rgb), .13); border-radius: 9px; background: linear-gradient(145deg, var(--accent-soft), rgba(var(--accent-rgb), .045)); color: var(--accent); font-size: 14px; font-weight: 700; }
 .gui-module-copy { display: grid; gap: 5px; }
-.gui-module-copy strong, .keybind-row strong { color: var(--text); font-size: 9px; font-weight: 650; }
-.gui-module-copy small, .keybind-row small { color: var(--muted); font-size: 8px; line-height: 1.45; }
+.gui-module-copy strong, .keybind-row strong { color: var(--text); font-size: 11px; font-weight: 680; }
+.gui-module-copy small, .keybind-row small { color: var(--muted); font-size: 9px; line-height: 1.5; }
 .gui-module .switch { justify-self: end; }
 .keybind-row { display: flex; min-height: 61px; align-items: center; justify-content: space-between; gap: 16px; margin-top: 15px; padding: 0 11px; border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,.012); }
 .keybind-row > span { display: grid; gap: 5px; }
 .keybind-button { min-width: 85px; min-height: 27px; padding: 0 8px; border: 1px solid rgba(var(--accent-rgb), .27); border-radius: 5px; background: var(--accent-soft); color: var(--accent); font-size: 8px; font-weight: 700; letter-spacing: .07em; cursor: pointer; }
 .keybind-button:hover { border-color: var(--accent); }
 .gui-accent-options { display: grid; gap: 9px; margin-top: 18px; }
-.gui-screen[data-screen-panel="appearance"] { overflow-y: auto; }
+.gui-screen[data-screen-panel="appearance"] { overflow: visible; }
 .gui-accent { display: flex; min-height: 43px; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--line); border-radius: 7px; background: rgba(255,255,255,.015); color: var(--muted); font-size: 9px; text-align: left; cursor: pointer; }
 .gui-accent:hover, .gui-accent.is-selected { border-color: rgba(var(--accent-rgb), .38); background: var(--accent-soft); color: var(--text); }
 .gui-accent .swatch { width: 10px; height: 10px; border-radius: 50%; background: var(--swatch-color); box-shadow: 0 0 10px color-mix(in srgb, var(--swatch-color) 45%, transparent); }
@@ -384,7 +389,7 @@ h1, h2, p { margin: 0; }
 
 @media (max-width: 650px) {
   .clickgui-overlay { padding: 9px; }
-  .clickgui-window { width: calc(100vw - 18px); min-height: min(520px, calc(100vh - 18px)); max-height: calc(100vh - 18px); grid-template-columns: 57px minmax(0, 1fr); }
+  .clickgui-window { width: calc(100vw - 18px); height: calc(100vh - 18px); min-height: min(520px, calc(100vh - 18px)); max-height: calc(100vh - 18px); grid-template-columns: 57px minmax(0, 1fr); border-radius: 12px; }
   .clickgui-sidebar { padding: 14px 6px 10px; align-items: center; }
   .gui-brand { flex-direction: column; gap: 5px; padding: 0; font-size: 7px; }
   .gui-brand small { font-size: 6px; }
